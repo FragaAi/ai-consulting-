@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { signIn } from '@/lib/auth'
+import { signIn, checkIsAdmin } from '@/lib/auth'
 
 export default function SignIn() {
   const [email, setEmail] = useState('')
@@ -17,15 +17,27 @@ export default function SignIn() {
     setLoading(true)
     setError('')
 
-    const { data, error } = await signIn(email, password)
+    try {
+      const { data, error } = await signIn(email, password)
 
-    if (error) {
-      setError(error.message)
-    } else if (data.user) {
-      router.push('/profile')
+      if (error) {
+        setError(error.message)
+      } else if (data.user) {
+        // Check if user is admin to determine redirect
+        const isAdmin = await checkIsAdmin(data.user.id)
+        
+        if (isAdmin) {
+          router.push('/admin')
+        } else {
+          router.push('/profile')
+        }
+      }
+    } catch (err) {
+      console.error('Sign-in error:', err)
+      setError('An unexpected error occurred during sign-in')
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (
