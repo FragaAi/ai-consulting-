@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { getCurrentUser, signOut, checkIsAdmin } from '@/lib/auth'
+import type { User as AuthUser } from '@supabase/supabase-js'
 
 export function Navbar() {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<AuthUser | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [loading, setLoading] = useState(true)

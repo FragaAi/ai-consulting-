@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { getCurrentUser, getProfile } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { User, AIAgent } from '@/types/database'
+import type { User as AuthUser } from '@supabase/supabase-js'
 
 export default function Profile() {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<AuthUser | null>(null)
   const [profile, setProfile] = useState<User | null>(null)
   const [agents, setAgents] = useState<AIAgent[]>([])
   const [loading, setLoading] = useState(true)

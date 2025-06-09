@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { getCurrentUser, getProfile } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { User, AIAgent } from '@/types/database'
+import type { User as AuthUser } from '@supabase/supabase-js'
 
 export default function AdminDashboard() {
-  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null)
   const [users, setUsers] = useState<User[]>([])
   const [agents, setAgents] = useState<AIAgent[]>([])
   const [loading, setLoading] = useState(true)

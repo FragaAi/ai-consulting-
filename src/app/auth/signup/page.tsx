@@ -11,41 +11,28 @@ export default function SignUp() {
   const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError('')
+    setLoading(true)
 
-    const { data, error } = await signUp(email, password, fullName)
-
-    if (error) {
-      setError(error.message)
-    } else {
-      setSuccess(true)
-      // Redirect to profile page after successful signup
-      setTimeout(() => {
-        router.push('/profile')
-      }, 2000)
+    try {
+      const { error } = await signUp(email, password, fullName)
+      
+      if (error) {
+        setError(error.message)
+      } else {
+        // Success! User will be redirected after email confirmation
+        router.push('/auth/signin?message=Check your email to confirm your account')
+      }
+    } catch (err) {
+      setError('An unexpected error occurred')
+      console.error('Signup error:', err)
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
-  }
-
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 text-center">
-          <div className="bg-green-900 border border-green-700 text-green-100 px-4 py-3 rounded">
-            <h3 className="text-lg font-medium">Account created successfully!</h3>
-            <p className="mt-2">Please check your email to verify your account.</p>
-            <p className="mt-2 text-sm">Redirecting to your profile...</p>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   return (

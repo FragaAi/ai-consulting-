@@ -15,7 +15,7 @@ export interface AIAgent {
   description: string
   status: 'active' | 'inactive' | 'paused'
   type: string
-  configuration: Record<string, any>
+  configuration: Record<string, unknown>
   created_at: string
   updated_at: string
 }
