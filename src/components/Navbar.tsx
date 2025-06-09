@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { getCurrentUser, signOut, checkIsAdmin } from '@/lib/auth'
+import { supabase } from '@/lib/supabase'
 import type { User as AuthUser } from '@supabase/supabase-js'
 
 export function Navbar() {
@@ -30,7 +31,33 @@ export function Navbar() {
         setLoading(false)
       }
     }
+
+    // Get initial user
     getUser()
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.id)
+        
+        if (event === 'SIGNED_IN' && session?.user) {
+          setUser(session.user)
+          // Check admin status for new user
+          const adminStatus = await checkIsAdmin(session.user.id)
+          setIsAdmin(adminStatus)
+          setLoading(false)
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null)
+          setIsAdmin(false)
+          setLoading(false)
+        }
+      }
+    )
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   const handleSignOut = async () => {
