@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Database setup and debugging files
+*.sql
+database-schema.sql
+setup-step*.sql
+check-*.sql
+reset-*.sql
+full-diagnostic*.sql
+quick-fix*.sql
+debug-*.sql
+temporary-*.sql
